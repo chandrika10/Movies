@@ -23,15 +23,19 @@ const initializationDBAndServer = async () => {
 initializationDBAndServer();
 
 // Get movie API
+const convertDbObjectToResponseObject = (dbObject) => {
+  return {
+    movieId: dbObject.movie_id,
+    directorId: dbObject.director_id,
+    movieName: dbObject.movie_name,
+    leadActor: dbObject.lead_actor,
+  };
+};
+
 app.get("/movies/", async (request, response) => {
   const getMovieQuery = `SELECT movie_name
                            FROM movie
                            `;
-  const convertDbObjectToResponseObject = (dbObject) => {
-    return {
-      movieName: dbObject.movie_name,
-    };
-  };
   const movieArray = await db.all(getMovieQuery);
   response.send(
     movieArray.map((eachPlayer) => convertDbObjectToResponseObject(eachPlayer))
@@ -59,7 +63,7 @@ app.get("/movies/:movieId/", async (request, response) => {
                               FROM movie
                               WHERE movie_id = ${movieId}`;
   const movie = await db.get(getMovieIdQuery);
-  response.send(movie);
+  response.send(convertDbObjectToResponseObject(movie));
 });
 
 //Update movie API
