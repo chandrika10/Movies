@@ -27,8 +27,15 @@ app.get("/movies/", async (request, response) => {
   const getMovieQuery = `SELECT movie_name
                            FROM movie
                            `;
+  const convertDbObjectToResponseObject = (dbObject) => {
+    return {
+      movieName: dbObject.movie_name,
+    };
+  };
   const movieArray = await db.all(getMovieQuery);
-  response.send(movieArray);
+  response.send(
+    movieArray.map((eachPlayer) => convertDbObjectToResponseObject(eachPlayer))
+  );
 });
 
 //Add movie API
@@ -84,8 +91,16 @@ app.get("/directors/", async (request, response) => {
   const getDirectorQuery = `SELECT *
                            FROM director
                            `;
+  const convertDbObjectToResponseObject = (dbObject) => {
+    return {
+      directorId: dbObject.director_id,
+      directorName: dbObject.director_name,
+    };
+  };
   const movieArray = await db.all(getDirectorQuery);
-  response.send(movieArray);
+  response.send(
+    movieArray.map((eachPlayer) => convertDbObjectToResponseObject(eachPlayer))
+  );
 });
 
 //Get API7
@@ -95,8 +110,15 @@ app.get("/directors/:directorId/movies/", async (request, response) => {
                            FROM movie
                            WHERE director_id = ${directorId}
                            `;
+  const convertDbObjectToResponseObject = (dbObject) => {
+    return {
+      movieName: dbObject.movie_name,
+    };
+  };
   const movieArray = await db.all(getDirectorQuery);
-  response.send(movieArray);
+  response.send(
+    movieArray.map((eachPlayer) => convertDbObjectToResponseObject(eachPlayer))
+  );
 });
 
 module.exports = app;
